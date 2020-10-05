@@ -1,4 +1,6 @@
 import networkx as nx
+from queue import PriorityQueue
+import math
 
 START = '#'
 END = '$'
@@ -57,6 +59,100 @@ class Graph():
             moves.append(move)
 
         return moves
+
+    def get_nodes(self):
+        return self.graph.nodes
+
+    # Get the path of the search from the parent vector
+    def get_correct_path(self, parent):
+
+        correct_path = []
+
+        cur_coord = self.end
+
+        while parent.get(cur_coord):
+            correct_path.append(cur_coord)
+            cur_coord = parent[cur_coord]
+
+        correct_path.append(self.start)
+
+        correct_path.reverse()
+
+        return correct_path
+
+    def depth_fs(self):
+        stack = []
+        visited = {}
+        parent = {}
+        complete_path = []
+
+        stack.append(self.start)
+
+        while len(stack) > 0:
+            coord = stack.pop()
+
+            visited[coord] = True
+            complete_path.append(coord)
+
+            if coord == self.end:
+                break
+
+            for neighbor in self.graph[coord]:
+                if not visited.get(neighbor):
+                    stack.append(neighbor)
+                    parent[neighbor] = coord
+
+        return self.get_correct_path(parent), complete_path
+
+    def breadth_fs(self):  # STILL NOT WORKING
+        queue = []
+        visited = {}
+        parent = {}
+        complete_path = []
+
+        queue.append(self.start)
+
+        while len(queue) > 0:
+            coord = queue.pop(0)
+
+            visited[coord] = True
+            complete_path.append(coord)
+
+            if coord == self.end:
+                break
+
+            for neighbor in self.graph[coord]:
+                if not visited.get(neighbor):
+                    queue.append(neighbor)
+                    parent[neighbor] = coord
+
+        return self.get_correct_path(parent), complete_path
+
+    def best_fs(self, heuristic):
+        priority_queue = PriorityQueue()
+        visited = {}
+        parent = {}
+        complete_path = []
+
+        dist = heuristic(self.start, self.end)
+        priority_queue.put((dist, (self.start)))
+
+        while not priority_queue.empty():
+            _, coord = priority_queue.get()
+
+            visited[coord] = True
+            complete_path.append(coord)
+
+            if coord == self.end:
+                break
+
+            for neighbor in self.graph[coord]:
+                if not visited.get(neighbor):
+                    priority_queue.put(
+                        (heuristic(neighbor, self.end), neighbor))
+                    parent[neighbor] = coord
+
+        return self.get_correct_path(parent), complete_path
 
     def __str__(self):
         return str(self.graph.edges)
