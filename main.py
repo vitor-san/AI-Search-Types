@@ -11,4 +11,3 @@ with open(sys.argv[1]) as f:
         matrix.append(list(line.strip()))
 
     g = Graph(matrix)
-    print(g)

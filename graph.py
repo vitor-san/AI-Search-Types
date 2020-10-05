@@ -49,7 +49,6 @@ class Graph():
         for step in steps:
             move = (coords[0] + step[0], coords[1] + step[1])
 
-            # print(move)
             if not (0 <= move[0] < self.rows and
                     0 <= move[1] < self.cols) or \
                     input_matrix[move[0]][move[1]] == WALL:
