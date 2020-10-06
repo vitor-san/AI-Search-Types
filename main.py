@@ -1,6 +1,6 @@
-from graph import Graph
 import sys
-from matplotlib import pyplot as plt, transforms
+from matplotlib import pyplot as plt, transforms, animation
+from graph import Graph
 from custom_plots import MyScatter
 from utils import euclidian_distance
 
@@ -16,33 +16,24 @@ with open(sys.argv[1]) as f:
     g = Graph(matrix)
     path_to_goal, visited = g.depth_fs()
 
+    # We don't want the start and end nodes to be in the path (because of ploting),
+    # so let's remove them from it.
+    path_to_goal = path_to_goal[1:-1]
+    visited = visited[1:-1]
+
     # Now, we will plot all of the points, coloring them appropriately
 
     figure, axes = plt.subplots(dpi=141)
 
-    delimiter_color = "black"
-    delimiters_on = False
-
-    if delimiters_on:
-        # Row delimiters
-        for i in range(g.rows):
-            axes.axhline(i - 0.5, color=delimiter_color)
-            axes.axhline(i + 0.5, color=delimiter_color)
-
-        # Column delimiters
-        for j in range(g.cols):
-            axes.axvline(j - 0.5, color=delimiter_color)
-            axes.axvline(j + 0.5, color=delimiter_color)
-
     axes.set_xlim(-0.5, g.cols - 0.5)
     axes.set_ylim(-0.5, g.rows - 0.5)
 
-    axes.yaxis.set_ticks([])  # remove ticks
     axes.xaxis.set_ticks([])  # remove ticks
+    axes.yaxis.set_ticks([])  # remove ticks
 
-    axes.set_ylim(axes.get_ylim()[::-1])        # invert the axis
-    axes.xaxis.tick_top()                     # and move the X-Axis
-    axes.yaxis.tick_left()                    # remove right y-Ticks
+    axes.set_ylim(axes.get_ylim()[::-1])        # invert the y-axis
+    axes.xaxis.tick_top()                     # and move the x-axis
+    axes.yaxis.tick_left()  # remove right y-ticks
 
     g_nodes = g.get_nodes()
 
@@ -52,40 +43,54 @@ with open(sys.argv[1]) as f:
     color = []
     marker = []
 
-    use_tiny_circle = False
-
-    for i in range(g.rows):
-        for j in range(g.cols):
-            x.append(j)
-            y.append(i)
-
-            if (i, j) not in g_nodes:
-                # It's an obstacle!!
-                color.append("black")
-                marker.append("s")
-                continue
-
-            if (i, j) == g.start:
-                color.append("green")
-                marker.append("h")
-                continue
-
-            if (i, j) == g.end:
-                color.append("red")
-                marker.append("X")
-                continue
-
-            if (i, j) in path_to_goal:
-                color.append("navy")
-                marker.append(".") if use_tiny_circle else marker.append("o")
-            elif (i, j) in visited:
-                color.append("dimgray")
-                marker.append(".") if use_tiny_circle else marker.append("o")
-            else:
-                color.append("white")
-                marker.append("s")
-
-    MyScatter(x, y, axes, m=marker, color=color, linewidth=0)
     axes.set_aspect('equal')
+    line, = axes.plot([], [], lw=3)
+
+    def init():
+        return line,
+
+    def animate(step):
+        was_defined = False
+        scatter = None
+
+        if step == 0:
+            for i in range(g.rows):
+                for j in range(g.cols):
+                    x.append(j)
+                    y.append(i)
+                    if (i, j) not in g_nodes:
+                        # It's an obstacle!!
+                        color.append("black")
+                        marker.append("s")
+                    elif (i, j) == g.start:
+                        color.append("green")
+                        marker.append("h")
+                    elif (i, j) == g.end:
+                        color.append("red")
+                        marker.append("X")
+                    else:
+                        color.append("white")
+                        marker.append("s")
+        else:
+            for xi, yi in visited[:step]:  # all points up to this step
+                index = xi * g.cols + yi
+                if (xi, yi) in path_to_goal:
+                    color[index] = "navy"
+                    marker[index] = "o"
+                else:
+                    color[index] = "dimgray"
+                    marker[index] = "o"
+
+        if not was_defined:
+            scatter = MyScatter(x, y, axes, markers=marker,
+                                colors=color, linewidth=0)
+        else:
+            scatter.update(marker, color)
+
+        return line,
+
+    # call the animator
+    anim = animation.FuncAnimation(figure, animate, frames=len(
+        visited) + 2, init_func=init, interval=100, blit=True, repeat=False)
 
     plt.show()
