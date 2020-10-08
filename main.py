@@ -4,16 +4,9 @@ from graph import Graph
 from custom_plots import MyScatter
 from utils import euclidian_distance
 
-with open(sys.argv[1]) as f:
-    dimensions_s = f.readline().split()
-    dimensions = (int(dimensions_s[0]), int(dimensions_s[1]))
 
-    matrix = []
 
-    for line in f.readlines():
-        matrix.append(list(line.strip()))
-
-    g = Graph(matrix)
+def visualize_path(g):
     path_to_goal, visited = g.depth_fs()
 
     # We don't want the start and end nodes to be in the path (because of ploting),
@@ -94,3 +87,21 @@ with open(sys.argv[1]) as f:
         visited) + 2, init_func=init, interval=100, blit=True, repeat=False)
 
     plt.show()
+
+
+def main():
+    with open(sys.argv[1]) as f:
+    dimensions_s = f.readline().split()
+    dimensions = (int(dimensions_s[0]), int(dimensions_s[1]))
+
+    matrix = []
+
+    for line in f.readlines():
+        matrix.append(list(line.strip()))
+
+    g = Graph(matrix)
+    visualize_path(g)
+
+
+def __name__ == '__main__':
+    main()
