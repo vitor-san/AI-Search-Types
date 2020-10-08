@@ -91,17 +91,17 @@ def visualize_path(g):
 
 def main():
     with open(sys.argv[1]) as f:
-    dimensions_s = f.readline().split()
-    dimensions = (int(dimensions_s[0]), int(dimensions_s[1]))
+        dimensions_s = f.readline().split()
+        dimensions = (int(dimensions_s[0]), int(dimensions_s[1]))
 
-    matrix = []
+        matrix = []
 
-    for line in f.readlines():
-        matrix.append(list(line.strip()))
+        for line in f.readlines():
+            matrix.append(list(line.strip()))
 
-    g = Graph(matrix)
-    visualize_path(g)
+        g = Graph(matrix)
+        visualize_path(g)
 
 
-def __name__ == '__main__':
+if __name__ == '__main__':
     main()
