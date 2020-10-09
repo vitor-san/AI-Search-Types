@@ -2,11 +2,11 @@ import sys
 from matplotlib import pyplot as plt, transforms, animation
 from graph import Graph
 from custom_plots import MyScatter
-from utils import euclidian_distance
+from utils import euclidian_distance, manhattan_distance
 
 
 def visualize_path(g):
-    path_to_goal, visited = g.breadth_fs()
+    path_to_goal, visited = g.a_star(manhattan_distance)
 
     # We don't want the start and end nodes to be in the path (because of plotting),
     # so let's remove them from it.
@@ -42,7 +42,6 @@ def visualize_path(g):
         return line,
 
     def animate(step):
-        was_defined = False
         scatter = None
 
         if step == 0:
@@ -64,6 +63,7 @@ def visualize_path(g):
                         color.append("white")
                         marker.append("s")
         else:
+            # for xi, yi in visited[:step]:  # all points up to this step
             xi, yi = visited[step - 1]
             index = xi * g.cols + yi
             if (xi, yi) in path_to_goal:
@@ -73,7 +73,7 @@ def visualize_path(g):
                 color[index] = "dimgray"
                 marker[index] = "o"
 
-        if not was_defined:
+        if scatter == None:
             scatter = MyScatter(x, y, axes, markers=marker,
                                 colors=color, linewidth=0)
         else:
@@ -84,7 +84,7 @@ def visualize_path(g):
     n_frames = len(visited) + 1
     frame_interval_ms = 100
     # call the animator
-    animation.FuncAnimation(figure, animate, frames=n_frames,
+    anim = animation.FuncAnimation(figure, animate, frames=n_frames,
                 init_func=init, interval=frame_interval_ms, blit=True, repeat=False)
 
     plt.show()
@@ -94,7 +94,7 @@ def get_graph_from_file(filename):
     with open(sys.argv[1]) as f:
         
         matrix = []
-        for line in f.readlines():
+        for line in f.readlines()[1:]:
             matrix.append(list(line.strip()))
 
         g = Graph(matrix)
