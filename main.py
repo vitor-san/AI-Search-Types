@@ -5,11 +5,10 @@ from custom_plots import MyScatter
 from utils import euclidian_distance
 
 
-
 def visualize_path(g):
-    path_to_goal, visited = g.depth_fs()
+    path_to_goal, visited = g.breadth_fs()
 
-    # We don't want the start and end nodes to be in the path (because of ploting),
+    # We don't want the start and end nodes to be in the path (because of plotting),
     # so let's remove them from it.
     path_to_goal = path_to_goal[1:-1]
     visited = visited[1:-1]
@@ -65,14 +64,15 @@ def visualize_path(g):
                         color.append("white")
                         marker.append("s")
         else:
-            for xi, yi in visited[:step]:  # all points up to this step
-                index = xi * g.cols + yi
-                if (xi, yi) in path_to_goal:
-                    color[index] = "navy"
-                    marker[index] = "o"
-                else:
-                    color[index] = "dimgray"
-                    marker[index] = "o"
+            # for xi, yi in visited[:step]:  # all points up to this step
+            xi, yi = visited[step - 1]
+            index = xi * g.cols + yi
+            if (xi, yi) in path_to_goal:
+                color[index] = "navy"
+                marker[index] = "o"
+            else:
+                color[index] = "dimgray"
+                marker[index] = "o"
 
         if not was_defined:
             scatter = MyScatter(x, y, axes, markers=marker,
@@ -82,24 +82,28 @@ def visualize_path(g):
 
         return line,
 
+    n_frames = len(visited) + 1
+    frame_interval_ms = 100
     # call the animator
-    anim = animation.FuncAnimation(figure, animate, frames=len(
-        visited) + 2, init_func=init, interval=100, blit=True, repeat=False)
+    animation.FuncAnimation(figure, animate, frames=n_frames,
+                init_func=init, interval=frame_interval_ms, blit=True, repeat=False)
 
     plt.show()
 
 
-def main():
+def get_graph_from_file(filename):
     with open(sys.argv[1]) as f:
-        dimensions_s = f.readline().split()
-        dimensions = (int(dimensions_s[0]), int(dimensions_s[1]))
-
+        
         matrix = []
-
         for line in f.readlines():
             matrix.append(list(line.strip()))
 
         g = Graph(matrix)
+        return g
+
+
+def main():
+        g = get_graph_from_file(sys.argv[1])
         visualize_path(g)
 
 

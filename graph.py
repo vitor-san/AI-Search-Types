@@ -98,13 +98,13 @@ class Graph():
                 break
 
             for neighbor in self.graph[coord]:
-                if not visited.get(neighbor):
+                if neighbor not in visited and neighbor not in stack:
                     stack.append(neighbor)
                     parent[neighbor] = coord
 
         return self.get_correct_path(parent), complete_path
 
-    def breadth_fs(self):  # STILL NOT WORKING
+    def breadth_fs(self):
         queue = []
         visited = {}
         parent = {}
@@ -114,7 +114,7 @@ class Graph():
 
         while len(queue) > 0:
             coord = queue.pop(0)
-
+            
             visited[coord] = True
             complete_path.append(coord)
 
@@ -122,7 +122,7 @@ class Graph():
                 break
 
             for neighbor in self.graph[coord]:
-                if not visited.get(neighbor):
+                if neighbor not in visited and neighbor not in queue:
                     queue.append(neighbor)
                     parent[neighbor] = coord
 
@@ -147,7 +147,7 @@ class Graph():
                 break
 
             for neighbor in self.graph[coord]:
-                if not visited.get(neighbor):
+                if neighbor not in visited and neighbor not in priority_queue.queue:
                     priority_queue.put(
                         (heuristic(neighbor, self.end), neighbor))
                     parent[neighbor] = coord
@@ -156,3 +156,20 @@ class Graph():
 
     def __str__(self):
         return str(self.graph.edges)
+
+
+if __name__ == '__main__':
+
+    filename = 'test_cases/test.in'
+
+    with open(filename) as f:
+        dimensions_s = f.readline().split()
+        dimensions = (int(dimensions_s[0]), int(dimensions_s[1]))
+
+        matrix = []
+
+        for line in f.readlines():
+            matrix.append(list(line.strip()))
+
+        g = Graph(matrix)
+        print(g.breadth_fs())
