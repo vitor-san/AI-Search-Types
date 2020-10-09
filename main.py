@@ -64,7 +64,6 @@ def visualize_path(g):
                         color.append("white")
                         marker.append("s")
         else:
-            # for xi, yi in visited[:step]:  # all points up to this step
             xi, yi = visited[step - 1]
             index = xi * g.cols + yi
             if (xi, yi) in path_to_goal:

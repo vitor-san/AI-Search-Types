@@ -2,5 +2,8 @@ import math
 
 
 def euclidian_distance(coord, target):
-    return math.sqrt(((coord[0] - target[0]) * (coord[0] - target[0])) +
-                     ((coord[1] - target[1]) * (coord[1] - target[1])))
+    return math.sqrt(sum([(coord[i] - target[i])**2 for i in range(len(coord))]))
+
+
+def manhattan_distance(coord, target):
+    return sum([math.fabs(coord[i] - target[i]) for i in range(len(coord))])
