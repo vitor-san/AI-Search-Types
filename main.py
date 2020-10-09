@@ -85,7 +85,7 @@ def visualize_path(g):
     n_frames = len(visited) + 1
     frame_interval_ms = 100
     # call the animator
-    animation.FuncAnimation(figure, animate, frames=n_frames,
+    anim = animation.FuncAnimation(figure, animate, frames=n_frames,
                 init_func=init, interval=frame_interval_ms, blit=True, repeat=False)
 
     plt.show()
@@ -95,7 +95,7 @@ def get_graph_from_file(filename):
     with open(sys.argv[1]) as f:
         
         matrix = []
-        for line in f.readlines():
+        for line in f.readlines()[1:]:
             matrix.append(list(line.strip()))
 
         g = Graph(matrix)
