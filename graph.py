@@ -154,6 +154,33 @@ class Graph():
 
         return self.get_correct_path(parent), complete_path
 
+    def a_star(self, heuristic):
+        priority_queue = PriorityQueue()
+        visited = {}
+        parent = {}
+        complete_path = []
+
+        cost = 0 + heuristic(self.start, self.end)
+        priority_queue.put((cost, (self.start)))
+
+        while not priority_queue.empty():
+            coord_cost, coord = priority_queue.get()
+            dist_to_coord = coord_cost - heuristic(coord, self.end)
+
+            visited[coord] = True
+            complete_path.append(coord)
+
+            if coord == self.end:
+                break
+
+            for neighbor in self.graph[coord]:
+                if neighbor not in visited and neighbor not in priority_queue.queue:
+                    priority_queue.put((1 + dist_to_coord + heuristic(neighbor, self.end),
+                                        neighbor))
+                    parent[neighbor] = coord
+
+        return self.get_correct_path(parent), complete_path        
+
     def __str__(self):
         return str(self.graph.edges)
 

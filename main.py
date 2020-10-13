@@ -2,11 +2,11 @@ import sys
 from matplotlib import pyplot as plt, transforms, animation
 from graph import Graph
 from custom_plots import MyScatter
-from utils import euclidian_distance
+from utils import euclidian_distance, manhattan_distance
 
 
 def visualize_path(g):
-    path_to_goal, visited = g.breadth_fs()
+    path_to_goal, visited = g.a_star(manhattan_distance)
 
     # We don't want the start and end nodes to be in the path (because of plotting),
     # so let's remove them from it.
@@ -42,7 +42,6 @@ def visualize_path(g):
         return line,
 
     def animate(step):
-        was_defined = False
         scatter = None
 
         if step == 0:
@@ -74,7 +73,7 @@ def visualize_path(g):
                 color[index] = "dimgray"
                 marker[index] = "o"
 
-        if not was_defined:
+        if scatter == None:
             scatter = MyScatter(x, y, axes, markers=marker,
                                 colors=color, linewidth=0)
         else:
