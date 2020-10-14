@@ -162,24 +162,54 @@ class Graph():
 
         cost = 0 + heuristic(self.start, self.end)
         priority_queue.put((cost, (self.start)))
+        visited[self.start] = True
+
 
         while not priority_queue.empty():
             coord_cost, coord = priority_queue.get()
             dist_to_coord = coord_cost - heuristic(coord, self.end)
 
-            visited[coord] = True
             complete_path.append(coord)
 
             if coord == self.end:
                 break
 
             for neighbor in self.graph[coord]:
-                if neighbor not in visited and neighbor not in priority_queue.queue:
+                if neighbor not in visited:
                     priority_queue.put((1 + dist_to_coord + heuristic(neighbor, self.end),
                                         neighbor))
                     parent[neighbor] = coord
+                    visited[neighbor] = True
 
         return self.get_correct_path(parent), complete_path        
+
+    def hill_climbing(self, heuristic):
+        visited = {}
+        parent = {}
+        complete_path = []
+
+        visited[self.start] = True
+
+        next = self.start
+        while next != None:
+            current = next
+            complete_path.append(current)
+
+            if current == self.end:
+                break
+
+            next = None
+            least_cost = 1000000
+            for neighbor in self.graph[current]:
+                current_cost = heuristic(neighbor, self.end)
+                if current_cost <= least_cost and neighbor not in visited:
+                    next = neighbor
+                    least_cost = current_cost
+                    parent[neighbor] = current
+                    visited[neighbor] = True
+
+        return self.get_correct_path(parent), complete_path        
+
 
     def __str__(self):
         return str(self.graph.edges)

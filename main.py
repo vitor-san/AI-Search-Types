@@ -6,7 +6,9 @@ from utils import euclidian_distance, manhattan_distance
 
 
 def visualize_path(g):
-    path_to_goal, visited = g.a_star(manhattan_distance)
+    path_to_goal, visited = g.hill_climbing(manhattan_distance)
+    print(path_to_goal)
+    print(visited)
 
     # We don't want the start and end nodes to be in the path (because of plotting),
     # so let's remove them from it.
