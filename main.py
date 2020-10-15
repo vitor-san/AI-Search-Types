@@ -4,20 +4,21 @@ from utils import get_graph_from_file
 from metrics import get_metrics, plot_metrics
 
 
-TEST_FILES = [ test for test in os.listdir('test_cases') if test[-3:] == '.in' ]
+TEST_FILES = [ os.path.join('test_cases', test) for test in os.listdir('test_cases') if test[-3:] == '.in' ]
 ALGORITHMS = ['dfs', 'bfs', 'best-fs', 'a-star', 'hill-climbing']
 
-def visualize_metrics(heuristic):    
+def visualize_metrics(algorithm, heuristic):
     metrics = []
     for test_file in TEST_FILES:
         g = get_graph_from_file(test_file)
-        for algorithm in ALGORITHMS:
-            metrics.append(get_metrics(g, algorithm, heuristic))
-    plot_metrics(metrics)
+        metrics.append(get_metrics(g, algorithm, heuristic))
+    
+    plot_metrics(metrics, algorithm)
+
 
 def main():
-    print('Qual modo deseja executar o programa?')
-    print('0: Comparação das métricas para todos os casos de teste')
+    print('Em qual modo deseja executar o programa?')
+    print('0: Visualizar as métricas de um algoritmo para todos os casos de teste')
     print('1: Visualizar caminhos dos algoritmos para um caso de teste')
     option = int(input())
 
@@ -29,7 +30,16 @@ def main():
     heuristic = ['euclidian', 'manhattan'][heuristic_opt]
 
     if option == 0:
-        visualize_metrics(heuristic)
+        print('Qual algoritmo?')
+        print('0: DFS')
+        print('1: BFS')
+        print('2: Best-first search')
+        print('3: A*')
+        print('4: Hill climbing')
+
+        algorithm_opt = int(input())
+        algorithm = ALGORITHMS[algorithm_opt]
+        visualize_metrics(algorithm, heuristic)
     
     elif option == 1:
         print('Insira o nome do arquivo de teste:', end=' ')
@@ -39,4 +49,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    visualize_metrics('hill-climbing', 'manhattan')

@@ -4,7 +4,7 @@ from graph import Graph
 
 
 def get_graph_from_file(filename):
-    with open(sys.argv[1]) as f:
+    with open(filename) as f:
         matrix = []
         for line in f.readlines()[1:]:
             matrix.append(list(line.strip()))

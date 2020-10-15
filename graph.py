@@ -12,6 +12,8 @@ class Graph():
     graph: networkx graph
     rows: number of rows
     cols: number of columns
+    nodes: number of nodes
+    edges: number of edges
     start: tuple containing start coordinates
     end: tuple containing end coordinates
     '''
@@ -22,6 +24,8 @@ class Graph():
         char matrix `input_matrix`.
         '''
         self.graph = self.create_graph(input_matrix)
+        self.nodes = self.graph.nodes
+        self.edges = self.graph.edges
 
     def create_graph(self, input_matrix):
         G = nx.Graph()
