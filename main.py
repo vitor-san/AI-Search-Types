@@ -6,11 +6,11 @@ from utils import euclidian_distance, manhattan_distance
 
 
 def visualize_path(g):
-    path_to_goal, visited = g.depth_fs()
+    path_to_goal, visited = g.a_star(manhattan_distance)
 
     # if len(path_to_goal) > 1:
     #     # We don't want the start and end nodes to be in the path (because of plotting),
-    #     # so let's remove them from it.    
+    #     # so let's remove them from it.
     #     visited = visited[1:-1]
 
     # elif len(path_to_goal) == 1:
@@ -85,7 +85,7 @@ def visualize_path(g):
 
         return line,
 
-    n_frames = len(visited) + 2
+    n_frames = len(visited) + 1
     frame_interval_ms = 100
     # call the animator
     anim = animation.FuncAnimation(figure, animate, frames=n_frames,
