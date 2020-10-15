@@ -86,21 +86,21 @@ class Graph():
         parent = {}
         complete_path = []
 
+        visited[self.start] = True
         stack.append(self.start)
 
         while len(stack) > 0:
             coord = stack.pop()
-
-            visited[coord] = True
             complete_path.append(coord)
 
             if coord == self.end:
                 break
 
             for neighbor in self.graph[coord]:
-                if neighbor not in visited and neighbor not in stack:
-                    stack.append(neighbor)
+                if neighbor not in visited:
                     parent[neighbor] = coord
+                    visited[neighbor] = True
+                    stack.append(neighbor)
 
         return self.get_correct_path(parent), complete_path
 
@@ -110,21 +110,22 @@ class Graph():
         parent = {}
         complete_path = []
 
+        visited[self.start] = True
         queue.append(self.start)
 
         while len(queue) > 0:
             coord = queue.pop(0)
-            
-            visited[coord] = True
+
             complete_path.append(coord)
 
             if coord == self.end:
                 break
 
             for neighbor in self.graph[coord]:
-                if neighbor not in visited and neighbor not in queue:
-                    queue.append(neighbor)
+                if neighbor not in visited:
                     parent[neighbor] = coord
+                    visited[neighbor] = True
+                    queue.append(neighbor)
 
         return self.get_correct_path(parent), complete_path
 
@@ -135,22 +136,23 @@ class Graph():
         complete_path = []
 
         dist = heuristic(self.start, self.end)
+        visited[self.start] = True
         priority_queue.put((dist, (self.start)))
 
         while not priority_queue.empty():
             _, coord = priority_queue.get()
 
-            visited[coord] = True
             complete_path.append(coord)
 
             if coord == self.end:
                 break
 
             for neighbor in self.graph[coord]:
-                if neighbor not in visited and neighbor not in priority_queue.queue:
+                if neighbor not in visited:
                     priority_queue.put(
                         (heuristic(neighbor, self.end), neighbor))
                     parent[neighbor] = coord
+                    visited[neighbor] = True
 
         return self.get_correct_path(parent), complete_path
 
@@ -162,41 +164,25 @@ class Graph():
 
         cost = 0 + heuristic(self.start, self.end)
         priority_queue.put((cost, (self.start)))
+        visited[self.start] = True
 
         while not priority_queue.empty():
             coord_cost, coord = priority_queue.get()
             dist_to_coord = coord_cost - heuristic(coord, self.end)
 
-            visited[coord] = True
             complete_path.append(coord)
 
             if coord == self.end:
                 break
 
             for neighbor in self.graph[coord]:
-                if neighbor not in visited and neighbor not in priority_queue.queue:
+                if neighbor not in visited:
                     priority_queue.put((1 + dist_to_coord + heuristic(neighbor, self.end),
                                         neighbor))
                     parent[neighbor] = coord
+                    visited[neighbor] = True
 
-        return self.get_correct_path(parent), complete_path        
+        return self.get_correct_path(parent), complete_path
 
     def __str__(self):
         return str(self.graph.edges)
-
-
-if __name__ == '__main__':
-
-    filename = 'test_cases/test.in'
-
-    with open(filename) as f:
-        dimensions_s = f.readline().split()
-        dimensions = (int(dimensions_s[0]), int(dimensions_s[1]))
-
-        matrix = []
-
-        for line in f.readlines():
-            matrix.append(list(line.strip()))
-
-        g = Graph(matrix)
-        print(g.breadth_fs())

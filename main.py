@@ -6,7 +6,8 @@ from utils import euclidian_distance, manhattan_distance
 
 
 def visualize_path(g):
-    path_to_goal, visited = g.a_star(manhattan_distance)
+    # path_to_goal, visited = g.a_star(manhattan_distance)
+    path_to_goal, visited = g.depth_fs()
 
     # We don't want the start and end nodes to be in the path (because of plotting),
     # so let's remove them from it.
@@ -81,18 +82,18 @@ def visualize_path(g):
 
         return line,
 
-    n_frames = len(visited) + 1
+    n_frames = len(visited) + 2
     frame_interval_ms = 100
     # call the animator
     anim = animation.FuncAnimation(figure, animate, frames=n_frames,
-                init_func=init, interval=frame_interval_ms, blit=True, repeat=False)
+                                   init_func=init, interval=frame_interval_ms, blit=True, repeat=False)
 
     plt.show()
 
 
 def get_graph_from_file(filename):
     with open(sys.argv[1]) as f:
-        
+
         matrix = []
         for line in f.readlines()[1:]:
             matrix.append(list(line.strip()))
@@ -102,8 +103,8 @@ def get_graph_from_file(filename):
 
 
 def main():
-        g = get_graph_from_file(sys.argv[1])
-        visualize_path(g)
+    g = get_graph_from_file(sys.argv[1])
+    visualize_path(g)
 
 
 if __name__ == '__main__':
