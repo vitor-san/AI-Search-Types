@@ -210,7 +210,6 @@ class Graph():
 
         return self.get_correct_path(parent), complete_path        
 
-
     def __str__(self):
         return str(self.graph.edges)
 
