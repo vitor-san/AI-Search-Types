@@ -6,13 +6,16 @@ from utils import euclidian_distance, manhattan_distance
 
 
 def visualize_path(g):
-    # path_to_goal, visited = g.a_star(manhattan_distance)
     path_to_goal, visited = g.depth_fs()
 
-    # We don't want the start and end nodes to be in the path (because of plotting),
-    # so let's remove them from it.
-    path_to_goal = path_to_goal[1:-1]
-    visited = visited[1:-1]
+    # if len(path_to_goal) > 1:
+    #     # We don't want the start and end nodes to be in the path (because of plotting),
+    #     # so let's remove them from it.    
+    #     visited = visited[1:-1]
+
+    # elif len(path_to_goal) == 1:
+    #     visited = visited[1:]
+    visited = visited[1:]
 
     # Now, we will plot all of the points, coloring them appropriately
 

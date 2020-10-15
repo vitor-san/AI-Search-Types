@@ -182,6 +182,33 @@ class Graph():
                     parent[neighbor] = coord
                     visited[neighbor] = True
 
+        return self.get_correct_path(parent), complete_path        
+
+    def hill_climbing(self, heuristic):
+        visited = {}
+        parent = {}
+        complete_path = []
+
+        visited[self.start] = True
+
+        next = self.start
+        while next != None:
+            current = next
+            complete_path.append(current)
+
+            if current == self.end:
+                break
+
+            next = None
+            least_cost = 1000000
+            for neighbor in self.graph[current]:
+                current_cost = heuristic(neighbor, self.end)
+                if current_cost <= least_cost and neighbor not in visited:
+                    next = neighbor
+                    least_cost = current_cost
+                    parent[neighbor] = current
+                    visited[neighbor] = True
+
         return self.get_correct_path(parent), complete_path
 
     def __str__(self):
