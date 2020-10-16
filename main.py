@@ -5,7 +5,7 @@ from metrics import get_metrics, plot_metrics
 
 
 TEST_FILES = [ os.path.join('test_cases', test) for test in os.listdir('test_cases') if test[-3:] == '.in' ]
-ALGORITHMS = ['dfs', 'bfs', 'best-fs', 'a-star', 'hill-climbing']
+
 
 def visualize_metrics(test_case, heuristic):
     g = get_graph_from_file(test_case)

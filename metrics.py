@@ -80,9 +80,10 @@ def plot_metrics(metrics, test_case, heuristic):
     plt.show()
 
 
-# Ignore data from algorithm if path wasn't found
+# Ignore data from algorithm in y limits if path wasn't found
 def get_ylims(data, found):    
-    max_y, min_y = -10000, 10000
+    max_y, min_y = data[0], data[0]
+
     for num, was_found in zip(data, found):
         if was_found == 'g':
             max_y = max(max_y, num)
