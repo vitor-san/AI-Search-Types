@@ -1,5 +1,4 @@
 import sys
-from custom_plots import MyScatter
 from matplotlib import pyplot as plt, transforms, animation
 from graph import Graph
 
