@@ -89,6 +89,7 @@ class Graph():
         visited = {}
         parent = {}
         complete_path = []
+        backtracks = 0
 
         visited[self.start] = True
         stack.append(self.start)
@@ -100,19 +101,26 @@ class Graph():
             if coord == self.end:
                 break
 
+            is_leaf = True
+
             for neighbor in self.graph[coord]:
                 if neighbor not in visited:
+                    is_leaf = False
                     parent[neighbor] = coord
                     visited[neighbor] = True
                     stack.append(neighbor)
 
-        return self.get_correct_path(parent), complete_path
+            if is_leaf:
+                backtracks += 1
+
+        return self.get_correct_path(parent), complete_path, backtracks
 
     def breadth_fs(self):
         queue = []
         visited = {}
         parent = {}
         complete_path = []
+        backtracks = 0
 
         visited[self.start] = True
         queue.append(self.start)
@@ -125,19 +133,26 @@ class Graph():
             if coord == self.end:
                 break
 
+            is_leaf = True
+
             for neighbor in self.graph[coord]:
                 if neighbor not in visited:
+                    is_leaf = False
                     parent[neighbor] = coord
                     visited[neighbor] = True
                     queue.append(neighbor)
 
-        return self.get_correct_path(parent), complete_path
+            if is_leaf:
+                backtracks += 1
+
+        return self.get_correct_path(parent), complete_path, backtracks
 
     def best_fs(self, heuristic):
         priority_queue = PriorityQueue()
         visited = {}
         parent = {}
         complete_path = []
+        backtracks = 0
 
         dist = heuristic(self.start, self.end)
         visited[self.start] = True
@@ -151,20 +166,27 @@ class Graph():
             if coord == self.end:
                 break
 
+            is_leaf = True
+
             for neighbor in self.graph[coord]:
                 if neighbor not in visited:
+                    is_leaf = False
                     priority_queue.put(
                         (heuristic(neighbor, self.end), neighbor))
                     parent[neighbor] = coord
                     visited[neighbor] = True
 
-        return self.get_correct_path(parent), complete_path
+            if is_leaf:
+                backtracks += 1
+
+        return self.get_correct_path(parent), complete_path, backtracks
 
     def a_star(self, heuristic):
         priority_queue = PriorityQueue()
         visited = {}
         parent = {}
         complete_path = []
+        backtracks = 0
 
         cost = 0 + heuristic(self.start, self.end)
         priority_queue.put((cost, (self.start)))
@@ -179,14 +201,20 @@ class Graph():
             if coord == self.end:
                 break
 
+            is_leaf = True
+
             for neighbor in self.graph[coord]:
                 if neighbor not in visited:
+                    is_leaf = False
                     priority_queue.put((1 + dist_to_coord + heuristic(neighbor, self.end),
                                         neighbor))
                     parent[neighbor] = coord
                     visited[neighbor] = True
 
-        return self.get_correct_path(parent), complete_path        
+            if is_leaf:
+                backtracks += 1
+
+        return self.get_correct_path(parent), complete_path, backtracks
 
     def hill_climbing(self, heuristic):
         visited = {}
@@ -195,25 +223,25 @@ class Graph():
 
         visited[self.start] = True
 
-        next = self.start
-        while next != None:
-            current = next
+        next_node = self.start
+        while next_node != None:
+            current = next_node
             complete_path.append(current)
 
             if current == self.end:
                 break
 
-            next = None
-            least_cost = 1000000
+            next_node = None
+            least_cost = heuristic(current, self.end)
             for neighbor in self.graph[current]:
                 current_cost = heuristic(neighbor, self.end)
                 if current_cost <= least_cost and neighbor not in visited:
-                    next = neighbor
+                    next_node = neighbor
                     least_cost = current_cost
                     parent[neighbor] = current
                     visited[neighbor] = True
 
-        return self.get_correct_path(parent), complete_path
+        return self.get_correct_path(parent), complete_path, 0
 
     def __str__(self):
         return str(self.graph.edges)
