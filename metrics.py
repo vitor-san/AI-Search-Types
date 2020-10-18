@@ -33,11 +33,12 @@ def plot_metrics(metrics, test_case, heuristic):
         speed.append(metric['speed'])
         images.append(metric['image'])
 
-    fig, ((_,_), (_,_), (len_ax, eff_ax), (speed_ax, bt_ax)) = plt.subplots(4, 2)   # Creating 3x2 grid
-    time_ax = plt.subplot(4, 1, 2)  # Selecting first row as a single plot (execution time)
+    fig, ((_,_), (_,_), (len_ax, eff_ax), (speed_ax, bt_ax)) = plt.subplots(4, 2)   # Creating 4x2 grid
+    time_ax = plt.subplot(4, 1, 2)  # Selecting second row of a 4x1 as a single plot (execution time)
 
+    # Displaying map images
     for i, (image, algorithm_name) in enumerate(zip(images, algorithm_names)):
-        image_ax = plt.subplot(4, 5, i+1)
+        image_ax = plt.subplot(4, 5, i+1)   # Selecting the i-th subplot on the first row of a 4x5 grid
         image_ax.set_title(algorithm_name)
         image_ax.set_yticks([])
         image_ax.set_xticks([])
