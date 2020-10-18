@@ -22,6 +22,7 @@ def plot_metrics(metrics, test_case, heuristic):
     found_goal = []
     efficiency = []
     speed = []
+    images = []
 
     for metric in metrics:
         Ns.append((metric['n_vertices'], metric['n_edges']))
@@ -30,9 +31,18 @@ def plot_metrics(metrics, test_case, heuristic):
         found_goal.append('g' if metric['found_goal'] else 'r') # Setting red/green color if found
         efficiency.append(metric['efficiency'])
         speed.append(metric['speed'])
+        images.append(metric['image'])
 
-    fig, ((_,_), (len_ax, eff_ax), (speed_ax, bt_ax)) = plt.subplots(3, 2)   # Creating 3x2 grid
-    time_ax = plt.subplot(3, 1, 1)  # Selecting first row as a single plot (execution time)
+    fig, ((_,_), (_,_), (len_ax, eff_ax), (speed_ax, bt_ax)) = plt.subplots(4, 2)   # Creating 3x2 grid
+    time_ax = plt.subplot(4, 1, 2)  # Selecting first row as a single plot (execution time)
+
+    for i, (image, algorithm_name) in enumerate(zip(images, algorithm_names)):
+        image_ax = plt.subplot(4, 5, i+1)
+        image_ax.set_title(algorithm_name)
+        image_ax.set_yticks([])
+        image_ax.set_xticks([])
+        image_ax.imshow(image, interpolation='nearest')
+
 
     fig.suptitle(f'Comparação de métricas dos algoritmos para o caso de teste {test_case} com heurística {heuristic}')
 
@@ -76,7 +86,7 @@ def plot_metrics(metrics, test_case, heuristic):
     # bt_ax.set_ylim(**(get_ylims(backtracks, found_goal)))
     # eff_ax.bar(range(len(algorithm_names)), backtracks, color=found_goal)
 
-    plt.tight_layout()
+    plt.subplots_adjust(bottom=0.06, hspace=0.4)
     plt.show()
 
 
@@ -117,6 +127,19 @@ def get_metrics(g, heuristic_name, n_repetitions=N_REPETITIONS):
             time += get_time(algorithm, *arg)[0]
         time /= n_repetitions
 
+        image = [ [(0,0,0)]*g.cols for i in range(g.rows) ]
+        for coord in g.graph.nodes:
+            image[coord[0]][coord[1]] = (255,255,255)
+        
+        for coord in visited:
+            image[coord[0]][coord[1]] = (150,150,150)
+
+        for coord in path:
+            image[coord[0]][coord[1]] = (255,204,0)
+
+        image[g.start[0]][g.start[1]] = (51,204,51)
+        image[g.end[0]][g.end[1]] = (204,0,0)
+        
         metrics.append({
             'algorithm': algorithm_name,
             'n_repetitions': n_repetitions,
@@ -127,7 +150,8 @@ def get_metrics(g, heuristic_name, n_repetitions=N_REPETITIONS):
             'path_len': len(path),
             'found_goal': path[-1] == g.end,
             'efficiency': len(path)/len(visited),
-            'speed': len(g.nodes)/(time + 1e-12) # Adding 10^-12 to prevent division by zero on fast executions
+            'speed': len(g.nodes)/(time + 1e-12), # Adding 10^-12 to prevent division by zero on fast executions
+            'image': image
         })
 
     return metrics

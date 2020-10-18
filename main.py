@@ -9,7 +9,7 @@ TEST_FILES = [ os.path.join('test_cases', test) for test in os.listdir('test_cas
 
 def visualize_metrics(test_case, heuristic):
     g = get_graph_from_file(test_case)
-    metrics = get_metrics(g, heuristic)    
+    metrics = get_metrics(g, heuristic)
     plot_metrics(metrics, os.path.split(test_case)[1], heuristic)
 
 
