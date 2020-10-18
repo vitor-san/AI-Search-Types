@@ -1,38 +1,32 @@
 import sys
-from utils import visualize_path, get_graph_from_file
-from heuristics import euclidian_distance, manhattan_distance
+import os
+from utils import get_graph_from_file
+from metrics import get_metrics, plot_metrics
 
 
-def get_h_function(name):
-    if name == 'manhattan':
-        return manhattan_distance
-    elif name == 'euclidian':
-        return euclidian_distance
+TEST_FILES = [ os.path.join('test_cases', test) for test in os.listdir('test_cases') if test[-3:] == '.in' ]
+
+
+def visualize_metrics(test_case, heuristic):
+    g = get_graph_from_file(test_case)
+    metrics = get_metrics(g, heuristic)
+    plot_metrics(metrics, os.path.split(test_case)[1], heuristic)
 
 
 def main():
-    g = get_graph_from_file(sys.argv[1])
+    print('Qual heurística deseja usar para as buscas informadas?')
+    print('0: Distância Euclidiana')
+    print('1: Distância Manhattan')
+    heuristic_opt = int(input())
 
-    h_name = 'manhattan'
+    heuristic = ['euclidian', 'manhattan'][heuristic_opt]
 
-    paths = []
+    print('Qual caso de teste?')
+    for i, test in enumerate(TEST_FILES):
+        print(f'{i+1}: {os.path.split(test)[1]}')
+    file = int(input())
 
-    goal_nodes, visited_nodes = g.depth_fs()
-    paths.append([goal_nodes, visited_nodes])
-
-    goal_nodes, visited_nodes = g.breadth_fs()
-    paths.append([goal_nodes, visited_nodes])
-
-    goal_nodes, visited_nodes = g.best_fs(get_h_function(h_name))
-    paths.append([goal_nodes, visited_nodes])
-
-    goal_nodes, visited_nodes = g.a_star(get_h_function(h_name))
-    paths.append([goal_nodes, visited_nodes])
-
-    goal_nodes, visited_nodes = g.a_star(get_h_function(h_name))
-    paths.append([goal_nodes, visited_nodes])
-
-    visualize_path(g, paths)
+    visualize_metrics(TEST_FILES[file-1], heuristic)
 
 
 if __name__ == '__main__':
