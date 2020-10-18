@@ -44,7 +44,7 @@ class MyScatter():
         if s != self.size:
             self.sc.set_sizes(s**2*np.ones(self.n))
             self.size = s
-            # self._redraw_later()
+            self._redraw_later()
 
     def _redraw_later(self):
         self.timer = self.ax.figure.canvas.new_timer(interval=10)
