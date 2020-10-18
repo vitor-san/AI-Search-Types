@@ -223,20 +223,20 @@ class Graph():
 
         visited[self.start] = True
 
-        next = self.start
-        while next != None:
-            current = next
+        next_node = self.start
+        while next_node != None:
+            current = next_node
             complete_path.append(current)
 
             if current == self.end:
                 break
 
-            next = None
-            least_cost = 1000000
+            next_node = None
+            least_cost = heuristic(current, self.end)
             for neighbor in self.graph[current]:
                 current_cost = heuristic(neighbor, self.end)
                 if current_cost <= least_cost and neighbor not in visited:
-                    next = neighbor
+                    next_node = neighbor
                     least_cost = current_cost
                     parent[neighbor] = current
                     visited[neighbor] = True
